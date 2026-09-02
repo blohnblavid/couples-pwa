@@ -1,6 +1,15 @@
 // ave & john — frontend logic
 
-const START_DATE = new Date("2025-05-13T00:00:00");
+let NAME_A = "Ave";
+let NAME_B = "John";
+let START_DATE = new Date("2025-05-13T00:00:00");
+
+async function loadConfig() {
+  const cfg = await fetch("/api/config").then(r => r.json());
+  NAME_A = cfg.nameA;
+  NAME_B = cfg.nameB;
+  START_DATE = new Date(cfg.startDate + "T00:00:00");
+}
 let who = localStorage.getItem("avechat:who") || null;
 let tlPhoto = null;      // pending timeline photo: dataURL (new), existing url (unchanged), or null (none/removed)
 let editingId = null;    // milestone id currently being edited, or null when adding new
@@ -351,7 +360,7 @@ async function loadNotes() {
     const items = await api("/notes");
     $("note-empty").classList.toggle("hidden", items.length > 0);
     list.innerHTML = items.map((n) => `
-      <div class="note-card ${n.by === "Ave" ? "ave" : ""}">
+      <div class="note-card ${n.by === NAME_A ? "ave" : ""}">
         <div class="note-top">
           <span class="note-author">${esc(n.by)}</span>
           <span class="note-date">${new Date(n.date).toLocaleDateString("en-US", { month: "short", day: "numeric" })}</span>
@@ -389,7 +398,7 @@ async function removeNote(id) {
 async function loadPings() {
   try {
     const pings = await api("/pings");
-    const other = who === "Ave" ? "John" : "Ave";
+    const other = who === NAME_A ? NAME_B : NAME_A;
     const banner = $("ping-banner");
     if (pings[other]) {
       banner.innerHTML = `&#10024; <span><strong>${esc(other)}</strong> was thinking about you &middot; ${timeAgo(pings[other])}</span>`;
@@ -466,4 +475,15 @@ function boot() {
   setInterval(loadPings, 30000);
 }
 
-if (who) boot();
+async function init() {
+  await loadConfig();
+  document.querySelector(".marquee-names").innerHTML =
+    `${NAME_A.toLowerCase()} <span class="marquee-heart">&#9825;</span> ${NAME_B.toLowerCase()}`;
+  const gateBtns = document.querySelectorAll(".gate-btn");
+  gateBtns[0].textContent = NAME_A;
+  gateBtns[0].onclick = () => pickIdentity(NAME_A);
+  gateBtns[1].textContent = NAME_B;
+  gateBtns[1].onclick = () => pickIdentity(NAME_B);
+  if (who) boot();
+}
+init();

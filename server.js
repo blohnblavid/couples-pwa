@@ -64,9 +64,12 @@ app.use(express.json({ limit: "15mb" }));
 app.use(express.static(path.join(__dirname, "public")));
 app.use("/photos", express.static(PHOTO_DIR));
 
-const OTHER = { Ave: "John", John: "Ave" };
+const NAME_A = process.env.NAME_A || "Ave";
+const NAME_B = process.env.NAME_B || "John";
+const START_DATE = process.env.START_DATE || "2025-05-13";
+const OTHER = { [NAME_A]: NAME_B, [NAME_B]: NAME_A };
 function validWho(who) {
-  return who === "Ave" || who === "John";
+  return who === NAME_A || who === NAME_B;
 }
 
 // ---- milestones ----
