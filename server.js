@@ -253,5 +253,7 @@ function deletePhotoFile(url) {
   const name = path.basename(url);
   fs.unlink(path.join(PHOTO_DIR, name), () => {});
 }
-
+app.get("/api/config", (req, res) => {
+  res.json({ nameA: NAME_A, nameB: NAME_B, startDate: START_DATE });
+});
 app.listen(PORT, () => console.log(`ave & john listening on :${PORT}`));
