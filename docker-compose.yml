@@ -1,0 +1,9 @@
+services:
+  ave-and-john:
+    build: .
+    container_name: ave-and-john
+    restart: unless-stopped
+    ports:
+      - "3060:3060"
+    volumes:
+      - ./data:/app/data

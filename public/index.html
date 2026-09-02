@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<title>ave &amp; john</title>
+<link rel="manifest" href="/manifest.json" />
+<link rel="apple-touch-icon" href="/icons/icon-192.png" />
+<meta name="theme-color" content="#12172B" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,700;1,9..144,600&family=Outfit:wght@400;500;600&display=swap" rel="stylesheet" />
+<style>
+* { box-sizing: border-box; margin: 0; }
+html, body { height: 100%; }
+body {
+  background: radial-gradient(ellipse at 50% -10%, #1c2547 0%, #12172B 55%, #0d1122 100%);
+  background-attachment: fixed;
+  font-family: 'Outfit', sans-serif;
+  color: #F5EFE3;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 0 0 60px;
+  min-height: 100vh;
+}
+button { font-family: 'Outfit', sans-serif; }
+img { -webkit-user-drag: none; }
+
+/* gate */
+.gate { min-height: 100vh; width: 100%; display: flex; align-items: center; justify-content: center; padding: 24px; }
+.gate-card { text-align: center; max-width: 320px; }
+.gate-icon { color: #E8A33D; font-size: 1.4rem; margin-bottom: 10px; }
+.gate-card h1 { font-family: 'Fraunces', serif; font-weight: 700; font-size: 2rem; margin-bottom: 6px; }
+.gate-card p { color: rgba(245,239,227,0.6); margin-bottom: 22px; font-size: 0.9rem; }
+.gate-buttons { display: flex; gap: 10px; justify-content: center; }
+.gate-btn {
+  background: rgba(232,163,61,0.12); border: 1px solid rgba(232,163,61,0.4); color: #F5EFE3;
+  padding: 10px 20px; border-radius: 100px; font-size: 0.9rem; font-weight: 500; cursor: pointer;
+  transition: all .15s ease;
+}
+.gate-btn:hover { background: rgba(232,163,61,0.22); border-color: #E8A33D; }
+
+/* marquee */
+.marquee { width: 100%; position: relative; padding: 48px 20px 26px; text-align: center; overflow: hidden; }
+.marquee-glow {
+  position: absolute; top: -60px; left: 50%; transform: translateX(-50%);
+  width: 320px; height: 200px;
+  background: radial-gradient(ellipse, rgba(232,163,61,0.35) 0%, rgba(232,163,61,0) 70%);
+  pointer-events: none;
+}
+.marquee-names {
+  font-family: 'Fraunces', serif; font-weight: 600; font-style: italic; font-size: 2.1rem;
+  text-shadow: 0 0 24px rgba(232,163,61,0.45);
+  display: inline-flex; align-items: center; gap: 10px; position: relative;
+}
+.marquee-heart { color: #D98879; }
+.marquee-days { margin-top: 14px; display: flex; flex-direction: column; align-items: center; position: relative; }
+.marquee-days-num { font-family: 'Fraunces', serif; font-weight: 700; font-size: 3rem; color: #E8A33D; line-height: 1; }
+.marquee-days-label { font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.14em; color: rgba(245,239,227,0.5); margin-top: 6px; }
+
+/* ping */
+.ping-area { display: flex; flex-direction: column; align-items: center; gap: 10px; margin-bottom: 20px; padding: 0 20px; }
+.ping-banner {
+  display: flex; align-items: center; gap: 7px;
+  background: rgba(217,136,121,0.12); border: 1px solid rgba(217,136,121,0.35);
+  padding: 8px 16px; border-radius: 100px; font-size: 0.8rem;
+  animation: pingIn .4s ease;
+}
+.ping-banner strong { color: #D98879; font-weight: 600; }
+@keyframes pingIn { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: none; } }
+.ping-btn {
+  display: flex; align-items: center; gap: 7px; background: transparent;
+  border: 1px solid rgba(232,163,61,0.35); color: rgba(245,239,227,0.75);
+  padding: 8px 18px; border-radius: 100px; font-size: 0.8rem; font-weight: 500; cursor: pointer;
+  transition: all .2s ease;
+}
+.ping-btn:hover { border-color: #E8A33D; color: #E8A33D; background: rgba(232,163,61,0.08); }
+.ping-btn.sent { border-color: #E8A33D; background: rgba(232,163,61,0.15); color: #E8A33D; }
+.notif-btn {
+  background: none; border: none; color: rgba(245,239,227,0.45); font-size: 0.72rem;
+  cursor: pointer; text-decoration: underline; text-underline-offset: 2px;
+}
+.notif-btn:hover { color: #E8A33D; }
+
+/* tabs */
+.tabs {
+  display: flex; gap: 6px; background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(245,239,227,0.1); padding: 5px; border-radius: 100px; margin-bottom: 22px;
+}
+.tab {
+  display: flex; align-items: center; gap: 6px; background: transparent; border: none;
+  color: rgba(245,239,227,0.55); padding: 8px 14px; border-radius: 100px;
+  font-size: 0.82rem; font-weight: 500; cursor: pointer; transition: all .15s ease;
+}
+.tab.active { background: #E8A33D; color: #12172B; }
+
+/* panel + shared */
+.panel { width: 100%; max-width: 480px; padding: 0 20px; }
+.hidden { display: none !important; }
+.loading { display: flex; justify-content: center; padding: 40px; color: #E8A33D; }
+.empty { text-align: center; color: rgba(245,239,227,0.4); font-size: 0.85rem; padding: 20px 0; }
+.spinner { width: 20px; height: 20px; border: 2px solid rgba(232,163,61,0.25); border-top-color: #E8A33D; border-radius: 50%; animation: spin .9s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* timeline */
+.tl-row { display: flex; gap: 14px; }
+.tl-rail { display: flex; flex-direction: column; align-items: center; }
+.tl-dot { width: 10px; height: 10px; border-radius: 50%; background: #E8A33D; box-shadow: 0 0 10px rgba(232,163,61,0.6); margin-top: 5px; flex-shrink: 0; }
+.tl-line { width: 1.5px; flex: 1; background: rgba(245,239,227,0.15); margin: 4px 0; }
+.tl-content { padding-bottom: 24px; flex: 1; min-width: 0; }
+.tl-date { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.1em; color: #D98879; margin-bottom: 3px; }
+.tl-title-row { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.tl-actions { display: flex; align-items: center; gap: 2px; flex-shrink: 0; }
+.tl-content h3 { font-family: 'Fraunces', serif; font-weight: 600; font-size: 1.1rem; }
+.tl-content p { margin-top: 4px; font-size: 0.85rem; color: rgba(245,239,227,0.6); line-height: 1.5; overflow-wrap: break-word; }
+.tl-photo { margin-top: 8px; width: 100%; max-height: 240px; object-fit: cover; border-radius: 10px; border: 1px solid rgba(245,239,227,0.1); cursor: zoom-in; }
+
+.icon-btn { background: transparent; border: none; color: rgba(245,239,227,0.3); cursor: pointer; padding: 4px; flex-shrink: 0; transition: color .15s ease; font-size: 0.85rem; }
+.icon-btn:hover { color: #D98879; }
+
+.add-btn {
+  width: 100%; display: flex; align-items: center; justify-content: center; gap: 6px;
+  background: rgba(232,163,61,0.1); border: 1px dashed rgba(232,163,61,0.4); color: #E8A33D;
+  padding: 12px; border-radius: 14px; font-size: 0.85rem; font-weight: 500; cursor: pointer; transition: all .15s ease;
+}
+.add-btn:hover { background: rgba(232,163,61,0.18); }
+.add-btn:disabled { opacity: 0.5; }
+
+.add-form, .pending-card {
+  background: rgba(255,255,255,0.04); border: 1px solid rgba(245,239,227,0.1);
+  border-radius: 14px; padding: 14px; display: flex; flex-direction: column; gap: 8px;
+}
+.add-form input, .add-form textarea, .pending-card input {
+  background: rgba(0,0,0,0.2); border: 1px solid rgba(245,239,227,0.12); border-radius: 8px;
+  padding: 9px 11px; color: #F5EFE3; font-family: 'Outfit', sans-serif; font-size: 0.85rem; resize: none;
+}
+.add-form input::placeholder, .add-form textarea::placeholder, .pending-card input::placeholder { color: rgba(245,239,227,0.35); }
+.add-form input:focus, .add-form textarea:focus, .pending-card input:focus { outline: 1px solid rgba(232,163,61,0.5); }
+.form-actions { display: flex; justify-content: flex-end; gap: 8px; margin-top: 2px; }
+.form-error { color: #D98879; font-size: 0.78rem; text-align: right; }
+.btn-ghost, .btn-solid { border-radius: 100px; padding: 7px 16px; font-size: 0.8rem; font-weight: 500; cursor: pointer; }
+.btn-ghost { background: transparent; border: 1px solid rgba(245,239,227,0.2); color: rgba(245,239,227,0.7); }
+.btn-solid { background: #E8A33D; border: none; color: #12172B; }
+.btn-solid:disabled { opacity: 0.5; }
+
+.attach-btn {
+  display: flex; align-items: center; justify-content: center; gap: 6px;
+  background: rgba(255,255,255,0.03); border: 1px dashed rgba(245,239,227,0.2);
+  color: rgba(245,239,227,0.7); padding: 9px; border-radius: 8px; font-size: 0.78rem; cursor: pointer;
+}
+.attach-btn:hover { border-color: rgba(232,163,61,0.5); color: #E8A33D; }
+.attach-preview { position: relative; border-radius: 8px; overflow: hidden; }
+.attach-preview img { width: 100%; max-height: 180px; object-fit: cover; display: block; }
+
+/* photo wall */
+.photo-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 16px; }
+.photo-card { position: relative; border-radius: 12px; overflow: hidden; background: rgba(255,255,255,0.04); border: 1px solid rgba(245,239,227,0.08); }
+.photo-card img { width: 100%; height: 140px; object-fit: cover; display: block; cursor: zoom-in; }
+.photo-remove {
+  position: absolute; top: 6px; right: 6px; background: rgba(0,0,0,0.55); border: none; color: #fff;
+  width: 22px; height: 22px; border-radius: 50%; display: flex; align-items: center; justify-content: center;
+  cursor: pointer; font-size: 0.7rem; z-index: 2;
+}
+.photo-meta { padding: 8px 9px; }
+.photo-caption { font-size: 0.78rem; }
+.photo-by { font-size: 0.65rem; color: rgba(245,239,227,0.4); text-transform: uppercase; letter-spacing: 0.06em; margin-top: 2px; }
+.pending-card img { width: 100%; border-radius: 10px; max-height: 260px; object-fit: cover; }
+
+/* lightbox */
+.lightbox {
+  position: fixed; inset: 0; background: rgba(10,13,26,0.93); z-index: 100;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  padding: 24px; cursor: zoom-out;
+}
+.lightbox img { max-width: 100%; max-height: 78vh; border-radius: 12px; box-shadow: 0 12px 50px rgba(0,0,0,0.6); cursor: default; }
+.lightbox-close {
+  position: absolute; top: 18px; right: 18px; background: rgba(255,255,255,0.1); border: none; color: #F5EFE3;
+  width: 40px; height: 40px; border-radius: 50%; font-size: 1rem; cursor: pointer;
+}
+.lightbox-meta { margin-top: 14px; text-align: center; cursor: default; }
+.lightbox-caption { font-size: 0.95rem; }
+.lightbox-by { font-size: 0.68rem; color: rgba(245,239,227,0.45); text-transform: uppercase; letter-spacing: 0.08em; margin-top: 4px; }
+
+/* notes */
+.note-compose {
+  display: flex; gap: 8px; background: rgba(255,255,255,0.04); border: 1px solid rgba(245,239,227,0.1);
+  border-radius: 14px; padding: 10px; margin-bottom: 16px;
+}
+.note-compose textarea {
+  flex: 1; background: transparent; border: none; color: #F5EFE3;
+  font-family: 'Outfit', sans-serif; font-size: 0.85rem; resize: none;
+}
+.note-compose textarea:focus { outline: none; }
+.note-compose textarea::placeholder { color: rgba(245,239,227,0.35); }
+.note-send {
+  background: #E8A33D; border: none; color: #12172B; width: 36px; height: 36px; border-radius: 50%;
+  cursor: pointer; flex-shrink: 0; align-self: flex-end; font-size: 0.85rem;
+}
+.note-send:disabled { opacity: 0.4; cursor: default; }
+.notes-list { display: flex; flex-direction: column; gap: 10px; }
+.note-card { border-radius: 12px; padding: 11px 13px; border-left: 3px solid #E8A33D; background: rgba(255,255,255,0.04); }
+.note-card.ave { border-left-color: #D98879; }
+.note-top { display: flex; align-items: center; gap: 8px; margin-bottom: 4px; }
+.note-author { font-size: 0.75rem; font-weight: 600; color: #E8A33D; }
+.note-card.ave .note-author { color: #D98879; }
+.note-date { font-size: 0.68rem; color: rgba(245,239,227,0.35); }
+.note-del { margin-left: auto; }
+.note-card p { font-size: 0.88rem; line-height: 1.5; overflow-wrap: break-word; }
+
+@media (max-width: 380px) {
+  .marquee-names { font-size: 1.7rem; }
+  .marquee-days-num { font-size: 2.4rem; }
+  .tab { padding: 8px 10px; font-size: 0.76rem; }
+}
+@media (prefers-reduced-motion: reduce) {
+  * { animation: none !important; transition: none !important; }
+}
+</style>
+</head>
+<body>
+
+<div id="gate" class="gate">
+  <div class="gate-card">
+    <div class="gate-icon">&#10084;</div>
+    <h1>ave &amp; john</h1>
+    <p>quick — who's opening this?</p>
+    <div class="gate-buttons">
+      <button class="gate-btn" onclick="pickIdentity('Ave')">I'm Ave</button>
+      <button class="gate-btn" onclick="pickIdentity('John')">I'm John</button>
+    </div>
+  </div>
+</div>
+
+<div id="main" class="hidden" style="width:100%; display:flex; flex-direction:column; align-items:center;">
+  <div class="marquee">
+    <div class="marquee-glow"></div>
+    <div class="marquee-names">ave <span class="marquee-heart">&#9825;</span> john</div>
+    <div class="marquee-days">
+      <span class="marquee-days-num" id="days-num">0</span>
+      <span class="marquee-days-label">days and counting</span>
+    </div>
+  </div>
+
+  <div class="ping-area">
+    <div id="ping-banner" class="ping-banner hidden"></div>
+    <button id="ping-btn" class="ping-btn" onclick="sendPing()">&#10084; thinking about you</button>
+    <button id="notif-btn" class="notif-btn hidden" onclick="enableNotifications()">turn on notifications</button>
+  </div>
+
+  <div class="tabs">
+    <button class="tab active" data-tab="timeline" onclick="switchTab('timeline')">&#128336; Our Timeline</button>
+    <button class="tab" data-tab="photos" onclick="switchTab('photos')">&#128247; Photo Album</button>
+    <button class="tab" data-tab="notes" onclick="switchTab('notes')">&#128172; Notes</button>
+  </div>
+
+<!-- Timeline -->
+<div id="view-timeline" class="panel">
+  <div id="timeline-list"></div>
+  <button id="tl-add-btn" class="add-btn" onclick="openAddForm()">+ add a moment</button>
+  <div id="tl-form" class="add-form hidden">
+    <input type="date" id="tl-date" />
+    <input type="text" id="tl-title" placeholder="what happened?" maxlength="120" />
+    <textarea id="tl-desc" placeholder="say more (optional)" rows="2" maxlength="600"></textarea>
+    <input type="file" id="tl-file" accept="image/*" class="hidden" onchange="handleTlFile(event)" />
+    <button id="tl-attach" class="attach-btn" onclick="document.getElementById('tl-file').click()">&#128247; attach a photo (optional)</button>
+    <div id="tl-preview" class="attach-preview hidden">
+      <img id="tl-preview-img" alt="attached" />
+      <button class="photo-remove" onclick="clearTlPhoto()">&#10005;</button>
+    </div>
+    <div class="form-actions">
+      <button class="btn-ghost" onclick="cancelTlForm()">cancel</button>
+      <button id="tl-save" class="btn-solid" onclick="saveMilestone()">save</button>
+    </div>
+    <div id="tl-error" class="form-error hidden"></div>
+  </div>
+</div>
+
+  <!-- Photo Album -->
+  <div id="view-photos" class="panel hidden">
+    <input type="file" id="ph-file" accept="image/*" multiple class="hidden" onchange="handlePhFile(event)" />
+    <button id="ph-add-btn" class="add-btn" onclick="document.getElementById('ph-file').click()">&#128247; add photos</button>
+    <div id="ph-pending" class="pending-card hidden">
+      <img id="ph-pending-img" alt="preview" />
+      <input type="text" id="ph-caption" placeholder="add a caption (optional)" maxlength="140" />
+      <div class="form-actions">
+        <button class="btn-ghost" onclick="discardPending()">discard</button>
+        <button id="ph-save" class="btn-solid" onclick="savePhoto()">add to album</button>
+      </div>
+      <div id="ph-error" class="form-error hidden"></div>
+    </div>
+    <div id="photo-grid" class="photo-grid"></div>
+    <p id="ph-empty" class="empty hidden">no photos yet — the album's waiting for the first one.</p>
+  </div>
+
+  <!-- Notes -->
+  <div id="view-notes" class="panel hidden">
+    <div class="note-compose">
+      <textarea id="note-text" rows="2" maxlength="1000" placeholder="leave something for the other one..."></textarea>
+      <button id="note-send" class="note-send" onclick="saveNote()">&#10148;</button>
+    </div>
+    <div id="note-error" class="form-error hidden" style="text-align:left; margin-bottom:12px;"></div>
+    <p id="note-empty" class="empty hidden">no notes yet — say something.</p>
+    <div id="notes-list" class="notes-list"></div>
+  </div>
+</div>
+
+<div id="lightbox" class="lightbox hidden" onclick="closeLightbox()">
+  <button class="lightbox-close" onclick="closeLightbox()">&#10005;</button>
+  <img id="lightbox-img" alt="photo" onclick="event.stopPropagation()" />
+  <div id="lightbox-meta" class="lightbox-meta" onclick="event.stopPropagation()"></div>
+</div>
+
+<script src="/app.js"></script>
+</body>
+</html>
