@@ -18,6 +18,7 @@ function applyAccentColor(cssVar, hex) {
   if (!m) return;
   const rgb = [parseInt(m[1], 16), parseInt(m[2], 16), parseInt(m[3], 16)].join(",");
   document.documentElement.style.setProperty(cssVar, rgb);
+}
 let who = localStorage.getItem("avechat:who") || null;
 let tlPhoto = null;      // pending timeline photo: dataURL (new), existing url (unchanged), or null (none/removed)
 let editingId = null;    // milestone id currently being edited, or null when adding new
