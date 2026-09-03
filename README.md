@@ -25,9 +25,9 @@ Set through environment variables, no code editing needed.
 
 | Variable | Required | Default | Description |
 |---|---|---|---|
-| `NAME_A` | No | `Ave` | First person's name |
-| `NAME_B` | No | `John` | Second person's name |
-| `START_DATE` | No | `2025-05-13` | Date the day counter counts from, `YYYY-MM-DD` |
+| `NAME_A` | No | `Person A` | First person's name |
+| `NAME_B` | No | `Person B` | Second person's name |
+| `START_DATE` | No | `2025-01-01` | Date the day counter counts from, `YYYY-MM-DD` |
 | `VAPID_EMAIL` | Recommended | `admin@example.com` | Contact email for push notifications. Apple's push service rejects placeholder addresses, so use a real one if push matters to you. |
 | `DATA_DIR` | No | `./data` (local) | Where the JSON database and photos are stored. On Railway, defaults to `/app/data`. |
 | `PORT` | No | `3060` | Port the server listens on |
