@@ -1,6 +1,6 @@
 {
-  "name": "ave & john",
-  "short_name": "ave & john",
+  "name": "couples-pwa",
+  "short_name": "us",
   "description": "a private little app for us",
   "start_url": "/",
   "display": "standalone",

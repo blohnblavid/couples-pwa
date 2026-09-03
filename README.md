@@ -29,6 +29,9 @@ Set through environment variables, no code editing needed.
 | `NAME_B` | No | `Person B` | Second person's name |
 | `START_DATE` | No | `2025-01-01` | Date the day counter counts from, `YYYY-MM-DD` |
 | `VAPID_EMAIL` | Recommended | `admin@example.com` | Contact email for push notifications. Apple's push service rejects placeholder addresses, so use a real one if push matters to you. |
+| `ACCENT_COLOR` | No | `#E8A33D` | Main accent color, hex |
+| `ACCENT2_COLOR` | No | `#D98879` | Secondary accent color, hex |
+| `BG_COLOR` | No | `#12172B` | Base color the background gradient is generated from, hex |
 | `DATA_DIR` | No | `./data` (local) | Where the JSON database and photos are stored. On Railway, defaults to `/app/data`. |
 | `PORT` | No | `3060` | Port the server listens on |
 

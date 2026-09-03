@@ -14,3 +14,4 @@ services:
       - VAPID_EMAIL=your-email@example.com
       - ACCENT_COLOR=#E8A33D
       - ACCENT2_COLOR=#D98879
+      - BG_COLOR=#12172B

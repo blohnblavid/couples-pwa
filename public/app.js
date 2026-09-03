@@ -3,39 +3,56 @@
 let NAME_A = "Ave";
 let NAME_B = "John";
 let START_DATE = new Date("2025-05-13T00:00:00");
+let currentConfig = null; // last-loaded /api/config response, so theme UI can fall back to it
 
 async function loadConfig() {
-  const cfg = await fetch("/api/config").then(r => r.json());
+  let cfg;
+  try {
+    cfg = await fetch("/api/config").then(r => r.json());
+  } catch {
+    return null;
+  }
+  currentConfig = cfg;
   NAME_A = cfg.nameA;
   NAME_B = cfg.nameB;
   START_DATE = new Date(cfg.startDate + "T00:00:00");
   applyAccentColor("--accent-rgb", cfg.accentColor);
   applyBackgroundColor(cfg.bgColor);
   applyAccentColor("--accent2-rgb", cfg.accent2Color);
+  return cfg;
+}
+
+// Parses "#rrggbb" into an [r,g,b] array, or null if it's not a valid hex color.
+function hexToRgb(hex) {
+  const m = hex.replace("#", "").match(/^([0-9a-f]{2})([0-9a-f]{2})([0-9a-f]{2})$/i);
+  if (!m) return null;
+  return [parseInt(m[1], 16), parseInt(m[2], 16), parseInt(m[3], 16)];
 }
 
 function applyAccentColor(cssVar, hex) {
-  const m = hex.replace("#", "").match(/^([0-9a-f]{2})([0-9a-f]{2})([0-9a-f]{2})$/i);
-  if (!m) return;
-  const rgb = [parseInt(m[1], 16), parseInt(m[2], 16), parseInt(m[3], 16)].join(",");
-  document.documentElement.style.setProperty(cssVar, rgb);
+  const rgb = hexToRgb(hex);
+  if (!rgb) return;
+  document.documentElement.style.setProperty(cssVar, rgb.join(","));
 }
 
+// Derives the gradient's lighter/darker stops from one base color. The per-channel
+// deltas below are picked to exactly reproduce the original hand-tuned gradient
+// (#1c2547 / #12172B / #0d1122) when the base is the stock BG_COLOR default.
 function applyBackgroundColor(hex) {
-  const m = hex.replace("#", "").match(/^([0-9a-f]{2})([0-9a-f]{2})([0-9a-f]{2})$/i);
-  if (!m) return;
-  const base = [parseInt(m[1], 16), parseInt(m[2], 16), parseInt(m[3], 16)];
-  const shade = (amt) => base.map(c => Math.max(0, Math.min(255, c + amt))).join(",");
-  document.documentElement.style.setProperty("--bg1-rgb", shade(40));
-  document.documentElement.style.setProperty("--bg2-rgb", shade(0));
-  document.documentElement.style.setProperty("--bg3-rgb", shade(-20));
+  const base = hexToRgb(hex);
+  if (!base) return;
+  const shade = (deltas) => base.map((c, i) => Math.max(0, Math.min(255, c + deltas[i]))).join(",");
+  document.documentElement.style.setProperty("--bg1-rgb", shade([10, 14, 28]));
+  document.documentElement.style.setProperty("--bg2-rgb", shade([0, 0, 0]));
+  document.documentElement.style.setProperty("--bg3-rgb", shade([-5, -6, -9]));
+  const meta = document.querySelector('meta[name="theme-color"]');
+  if (meta) meta.setAttribute("content", hex);
 }
 let who = localStorage.getItem("identity:who") || null;
 let tlPhoto = null;      // pending timeline photo: dataURL (new), existing url (unchanged), or null (none/removed)
 let editingId = null;    // milestone id currently being edited, or null when adding new
 let currentMilestones = []; // last-loaded milestones, so editMilestone() can look one up without refetching
 let phPending = null;    // pending album photo (dataURL)
-let currentTab = "timeline";
 
 // ---------- helpers ----------
 const $ = (id) => document.getElementById(id);
@@ -131,7 +148,6 @@ function pickIdentity(name) {
 
 // ---------- tabs ----------
 function switchTab(tab) {
-  currentTab = tab;
   document.querySelectorAll(".tab").forEach((t) => t.classList.toggle("active", t.dataset.tab === tab));
   ["timeline", "photos", "notes", "settings"].forEach((v) => $("view-" + v).classList.toggle("hidden", v !== tab));
 }
@@ -380,7 +396,7 @@ async function loadNotes() {
     const items = await api("/notes");
     $("note-empty").classList.toggle("hidden", items.length > 0);
     list.innerHTML = items.map((n) => `
-      <div class="note-card ${n.by === NAME_A ? "ave" : ""}">
+      <div class="note-card ${n.by === NAME_A ? "person-a" : ""}">
         <div class="note-top">
           <span class="note-author">${esc(n.by)}</span>
           <span class="note-date">${new Date(n.date).toLocaleDateString("en-US", { month: "short", day: "numeric" })}</span>
@@ -496,7 +512,16 @@ function boot() {
 }
 
 async function init() {
-  await loadConfig();
+  const cfg = await loadConfig();
+  if (!cfg) {
+    $("gate").innerHTML = `
+      <div class="gate-card">
+        <div class="gate-icon">&#9888;</div>
+        <h1>couldn't connect</h1>
+        <p>Having trouble reaching the server. Check your connection and reload.</p>
+      </div>`;
+    return;
+  }
   loadThemeOverrides();
   document.querySelector(".marquee-names").innerHTML =
     `${NAME_A.toLowerCase()} <span class="marquee-heart">&#9825;</span> ${NAME_B.toLowerCase()}`;
@@ -505,30 +530,6 @@ async function init() {
   gateBtns[0].onclick = () => pickIdentity(NAME_A);
   gateBtns[1].textContent = NAME_B;
   gateBtns[1].onclick = () => pickIdentity(NAME_B);
-  if (who) boot();
-}
-init();
-
-// ---------- personal theme override ----------
-function loadThemeOverrides() {
-  const saved = JSON.parse(localStorage.getItem("themeOverride") || "{}");
-  if (saved.accent) { applyAccentColor("--accent-rgb", saved.accent); $("theme-accent").value = saved.accent; }
-  if (saved.accent2) { applyAccentColor("--accent2-rgb", saved.accent2); $("theme-accent2").value = saved.accent2; }
-  if (saved.bg) { applyBackgroundColor(saved.bg); $("theme-bg").value = saved.bg; }
-}
-
-function saveThemeOverride(key, value) {
-  const saved = JSON.parse(localStorage.getItem("themeOverride") || "{}");
-  saved[key] = value;
-  localStorage.setItem("themeOverride", JSON.stringify(saved));
-}
-
-function resetTheme() {
-  localStorage.removeItem("themeOverride");
-  location.reload();
-}
-
-document.addEventListener("DOMContentLoaded", () => {
   $("theme-accent").addEventListener("input", (e) => {
     applyAccentColor("--accent-rgb", e.target.value);
     saveThemeOverride("accent", e.target.value);
@@ -541,4 +542,32 @@ document.addEventListener("DOMContentLoaded", () => {
     applyBackgroundColor(e.target.value);
     saveThemeOverride("bg", e.target.value);
   });
-});
+  if (who) boot();
+}
+init();
+
+// ---------- personal theme override ----------
+// Falls back to the server-configured colors when this browser hasn't customized them yet.
+function loadThemeOverrides() {
+  const saved = JSON.parse(localStorage.getItem("themeOverride") || "{}");
+  const accent = saved.accent || currentConfig.accentColor;
+  const accent2 = saved.accent2 || currentConfig.accent2Color;
+  const bg = saved.bg || currentConfig.bgColor;
+  applyAccentColor("--accent-rgb", accent);
+  $("theme-accent").value = accent;
+  applyAccentColor("--accent2-rgb", accent2);
+  $("theme-accent2").value = accent2;
+  applyBackgroundColor(bg);
+  $("theme-bg").value = bg;
+}
+
+function saveThemeOverride(key, value) {
+  const saved = JSON.parse(localStorage.getItem("themeOverride") || "{}");
+  saved[key] = value;
+  localStorage.setItem("themeOverride", JSON.stringify(saved));
+}
+
+function resetTheme() {
+  localStorage.removeItem("themeOverride");
+  location.reload();
+}

@@ -1,7 +1,7 @@
 // Service worker: receives pushes and shows notifications.
 
 self.addEventListener("push", (event) => {
-  let data = { title: "💛", body: "something new in ave & john" };
+  let data = { title: "💛", body: "something new for you two" };
   try { data = event.data.json(); } catch {}
   event.waitUntil(
     self.registration.showNotification(data.title, {

@@ -1,7 +1,7 @@
 {
   "name": "couples-pwa",
   "version": "1.0.0",
-  "description": "A private little app for Ave & John",
+  "description": "A private app for two people to share a timeline, photo album, and notes",
   "main": "server.js",
   "scripts": {
     "start": "node server.js"
