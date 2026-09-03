@@ -133,7 +133,7 @@ function pickIdentity(name) {
 function switchTab(tab) {
   currentTab = tab;
   document.querySelectorAll(".tab").forEach((t) => t.classList.toggle("active", t.dataset.tab === tab));
-  ["timeline", "photos", "notes"].forEach((v) => $("view-" + v).classList.toggle("hidden", v !== tab));
+  ["timeline", "photos", "notes", "settings"].forEach((v) => $("view-" + v).classList.toggle("hidden", v !== tab));
 }
 
 // ---------- timeline ----------
@@ -497,6 +497,7 @@ function boot() {
 
 async function init() {
   await loadConfig();
+  loadThemeOverrides();
   document.querySelector(".marquee-names").innerHTML =
     `${NAME_A.toLowerCase()} <span class="marquee-heart">&#9825;</span> ${NAME_B.toLowerCase()}`;
   const gateBtns = document.querySelectorAll(".gate-btn");
@@ -507,3 +508,37 @@ async function init() {
   if (who) boot();
 }
 init();
+
+// ---------- personal theme override ----------
+function loadThemeOverrides() {
+  const saved = JSON.parse(localStorage.getItem("themeOverride") || "{}");
+  if (saved.accent) { applyAccentColor("--accent-rgb", saved.accent); $("theme-accent").value = saved.accent; }
+  if (saved.accent2) { applyAccentColor("--accent2-rgb", saved.accent2); $("theme-accent2").value = saved.accent2; }
+  if (saved.bg) { applyBackgroundColor(saved.bg); $("theme-bg").value = saved.bg; }
+}
+
+function saveThemeOverride(key, value) {
+  const saved = JSON.parse(localStorage.getItem("themeOverride") || "{}");
+  saved[key] = value;
+  localStorage.setItem("themeOverride", JSON.stringify(saved));
+}
+
+function resetTheme() {
+  localStorage.removeItem("themeOverride");
+  location.reload();
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+  $("theme-accent").addEventListener("input", (e) => {
+    applyAccentColor("--accent-rgb", e.target.value);
+    saveThemeOverride("accent", e.target.value);
+  });
+  $("theme-accent2").addEventListener("input", (e) => {
+    applyAccentColor("--accent2-rgb", e.target.value);
+    saveThemeOverride("accent2", e.target.value);
+  });
+  $("theme-bg").addEventListener("input", (e) => {
+    applyBackgroundColor(e.target.value);
+    saveThemeOverride("bg", e.target.value);
+  });
+});

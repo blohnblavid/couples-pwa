@@ -262,6 +262,7 @@ img { -webkit-user-drag: none; }
     <button class="tab active" data-tab="timeline" onclick="switchTab('timeline')">&#128336; Our Timeline</button>
     <button class="tab" data-tab="photos" onclick="switchTab('photos')">&#128247; Photo Album</button>
     <button class="tab" data-tab="notes" onclick="switchTab('notes')">&#128172; Notes</button>
+    <button class="tab" data-tab="settings" onclick="switchTab('settings')">&#127912; Theme</button>
   </div>
 
 <!-- Timeline -->
@@ -312,6 +313,21 @@ img { -webkit-user-drag: none; }
     <div id="note-error" class="form-error hidden" style="text-align:left; margin-bottom:12px;"></div>
     <p id="note-empty" class="empty hidden">no notes yet — say something.</p>
     <div id="notes-list" class="notes-list"></div>
+  </div>
+
+  <div id="view-settings" class="panel hidden">
+    <div class="add-form">
+      <label style="font-size:0.85rem; color:rgba(245,239,227,0.7);">Main accent color
+        <input type="color" id="theme-accent" value="#E8A33D" style="width:100%; height:40px; margin-top:6px; border-radius:8px; border:1px solid rgba(245,239,227,0.12); background:transparent;">
+      </label>
+      <label style="font-size:0.85rem; color:rgba(245,239,227,0.7);">Secondary accent color
+        <input type="color" id="theme-accent2" value="#D98879" style="width:100%; height:40px; margin-top:6px; border-radius:8px; border:1px solid rgba(245,239,227,0.12); background:transparent;">
+      </label>
+      <label style="font-size:0.85rem; color:rgba(245,239,227,0.7);">Background color
+        <input type="color" id="theme-bg" value="#12172B" style="width:100%; height:40px; margin-top:6px; border-radius:8px; border:1px solid rgba(245,239,227,0.12); background:transparent;">
+      </label>
+      <button class="btn-ghost" onclick="resetTheme()" style="margin-top:8px;">reset to default</button>
+    </div>
   </div>
 </div>
 
