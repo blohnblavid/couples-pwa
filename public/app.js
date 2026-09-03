@@ -10,6 +10,7 @@ async function loadConfig() {
   NAME_B = cfg.nameB;
   START_DATE = new Date(cfg.startDate + "T00:00:00");
   applyAccentColor("--accent-rgb", cfg.accentColor);
+  applyBackgroundColor(cfg.bgColor);
   applyAccentColor("--accent2-rgb", cfg.accent2Color);
 }
 
@@ -19,7 +20,17 @@ function applyAccentColor(cssVar, hex) {
   const rgb = [parseInt(m[1], 16), parseInt(m[2], 16), parseInt(m[3], 16)].join(",");
   document.documentElement.style.setProperty(cssVar, rgb);
 }
-let who = localStorage.getItem("avechat:who") || null;
+
+function applyBackgroundColor(hex) {
+  const m = hex.replace("#", "").match(/^([0-9a-f]{2})([0-9a-f]{2})([0-9a-f]{2})$/i);
+  if (!m) return;
+  const base = [parseInt(m[1], 16), parseInt(m[2], 16), parseInt(m[3], 16)];
+  const shade = (amt) => base.map(c => Math.max(0, Math.min(255, c + amt))).join(",");
+  document.documentElement.style.setProperty("--bg1-rgb", shade(40));
+  document.documentElement.style.setProperty("--bg2-rgb", shade(0));
+  document.documentElement.style.setProperty("--bg3-rgb", shade(-20));
+}
+let who = localStorage.getItem("identity:who") || null;
 let tlPhoto = null;      // pending timeline photo: dataURL (new), existing url (unchanged), or null (none/removed)
 let editingId = null;    // milestone id currently being edited, or null when adding new
 let currentMilestones = []; // last-loaded milestones, so editMilestone() can look one up without refetching
@@ -114,7 +125,7 @@ function showError(id, msg) {
 // ---------- identity ----------
 function pickIdentity(name) {
   who = name;
-  localStorage.setItem("avechat:who", name);
+  localStorage.setItem("identity:who", name);
   boot();
 }
 
