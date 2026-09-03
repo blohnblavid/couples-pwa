@@ -7,3 +7,8 @@ services:
       - "3060:3060"
     volumes:
       - ./data:/app/data
+    environment:
+      - NAME_A=Ave
+      - NAME_B=John
+      - START_DATE=2025-05-13
+      - VAPID_EMAIL=your-email@example.com
