@@ -1,7 +1,7 @@
 services:
-  ave-and-john:
+  couples-pwa:
     build: .
-    container_name: ave-and-john
+    container_name: couples-pwa
     restart: unless-stopped
     ports:
       - "3060:3060"
