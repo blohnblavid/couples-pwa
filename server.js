@@ -66,6 +66,7 @@ const NAME_B = process.env.NAME_B || "John";
 const START_DATE = process.env.START_DATE || "2025-05-13";
 const ACCENT_COLOR = process.env.ACCENT_COLOR || "#E8A33D";
 const ACCENT2_COLOR = process.env.ACCENT2_COLOR || "#D98879";
+const BG_COLOR = process.env.BG_COLOR || "#12172B";
 const OTHER = { [NAME_A]: NAME_B, [NAME_B]: NAME_A };
 function validWho(who) {
   return who === NAME_A || who === NAME_B;
@@ -253,6 +254,6 @@ function deletePhotoFile(url) {
   fs.unlink(path.join(PHOTO_DIR, name), () => {});
 }
 app.get("/api/config", (req, res) => {
-  res.json({ nameA: NAME_A, nameB: NAME_B, startDate: START_DATE, accentColor: ACCENT_COLOR, accent2Color: ACCENT2_COLOR });
+  res.json({ nameA: NAME_A, nameB: NAME_B, startDate: START_DATE, accentColor: ACCENT_COLOR, accent2Color: ACCENT2_COLOR, bgColor: BG_COLOR });
 });
 app.listen(PORT, () => console.log(`ave & john listening on :${PORT}`));

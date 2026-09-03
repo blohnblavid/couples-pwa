@@ -17,11 +17,14 @@
   --accent2-rgb: 217,136,121;
   --accent: rgb(var(--accent-rgb));
   --accent2: rgb(var(--accent2-rgb));
+  --bg1-rgb: 58,63,83;
+  --bg2-rgb: 18,23,43;
+  --bg3-rgb: 13,17,34;
 }
 * { box-sizing: border-box; margin: 0; }
 html, body { height: 100%; }
 body {
-  background: radial-gradient(ellipse at 50% -10%, #1c2547 0%, #12172B 55%, #0d1122 100%);
+  background: radial-gradient(ellipse at 50% -10%, rgb(var(--bg1-rgb)) 0%, rgb(var(--bg2-rgb)) 55%, rgb(var(--bg3-rgb)) 100%);
   background-attachment: fixed;
   font-family: 'Outfit', sans-serif;
   color: #F5EFE3;
