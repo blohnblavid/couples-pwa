@@ -12,3 +12,5 @@ services:
       - NAME_B=Person B
       - START_DATE=2025-01-01
       - VAPID_EMAIL=your-email@example.com
+      - ACCENT_COLOR=#E8A33D
+      - ACCENT2_COLOR=#D98879

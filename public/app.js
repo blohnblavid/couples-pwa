@@ -9,7 +9,15 @@ async function loadConfig() {
   NAME_A = cfg.nameA;
   NAME_B = cfg.nameB;
   START_DATE = new Date(cfg.startDate + "T00:00:00");
+  applyAccentColor("--accent-rgb", cfg.accentColor);
+  applyAccentColor("--accent2-rgb", cfg.accent2Color);
 }
+
+function applyAccentColor(cssVar, hex) {
+  const m = hex.replace("#", "").match(/^([0-9a-f]{2})([0-9a-f]{2})([0-9a-f]{2})$/i);
+  if (!m) return;
+  const rgb = [parseInt(m[1], 16), parseInt(m[2], 16), parseInt(m[3], 16)].join(",");
+  document.documentElement.style.setProperty(cssVar, rgb);
 let who = localStorage.getItem("avechat:who") || null;
 let tlPhoto = null;      // pending timeline photo: dataURL (new), existing url (unchanged), or null (none/removed)
 let editingId = null;    // milestone id currently being edited, or null when adding new
