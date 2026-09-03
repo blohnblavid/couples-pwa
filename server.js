@@ -22,10 +22,7 @@ function loadData() {
     return JSON.parse(fs.readFileSync(DATA_FILE, "utf8"));
   } catch {
     return {
-      milestones: [
-        { id: "seed-1", date: "2024-08-12", title: "My first day at CFA", desc: "Where it all started.", photo: null },
-        { id: "seed-2", date: "2025-05-13", title: "Made it official", desc: "May 13, 2025 — the day it became us.", photo: null },
-      ],
+      milestones: [],
       photos: [],
       notes: [],
       pings: {},           // { "Ave": iso, "John": iso }
